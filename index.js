@@ -6,10 +6,7 @@ const typeDefs = `
     type Query {
         images: [Image]!
         search(query: String!): [Image]!
-    }
-
-    type Mutation {
-      delete(id: ID!): Boolean
+        delete(id: ID!): Boolean
     }
 
     type Image {
@@ -70,9 +67,7 @@ const resolvers = {
         }
       });
       return images;
-    }
-  },
-  Mutation: {
+    },
     delete: async (parent, { id }, ctx, info) => {
       try {
         await db
@@ -85,7 +80,7 @@ const resolvers = {
         return false;
       }
     }
-  }
+  },
 };
 
 const server = new GraphQLServer({
