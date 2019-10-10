@@ -22,7 +22,7 @@ const typeDefs = `
     type Query {
         images: [Image]!
         search(query: String!): [Image]!
-        delete(id: ID!): [Image]
+        delete(id: ID!): Boolean!
     }
 
     type Image {
