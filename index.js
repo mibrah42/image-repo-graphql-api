@@ -1,12 +1,28 @@
 import { GraphQLServer } from "graphql-yoga";
 import { db } from "./firebase/config";
 
+const getImages = async () => {
+  const response = await db.collection("images").get();
+  const images = [];
+  response.forEach(doc => {
+    const data = doc.data();
+    images.push({
+      id: doc.id,
+      title: data.title,
+      description: data.description,
+      tags: data.tags,
+      url: data.url
+    });
+  });
+  return images;
+};
+
 // Type definitions (Schema)
 const typeDefs = `
     type Query {
         images: [Image]!
         search(query: String!): [Image]!
-        delete(id: ID!): Boolean
+        delete(id: ID!): [Image]
     }
 
     type Image {
@@ -22,19 +38,7 @@ const typeDefs = `
 const resolvers = {
   Query: {
     images: async () => {
-      const response = await db.collection("images").get();
-      const images = [];
-      response.forEach(doc => {
-        const data = doc.data();
-        images.push({
-          id: doc.id,
-          title: data.title,
-          description: data.description,
-          tags: data.tags,
-          url: data.url
-        });
-      });
-      return images;
+      return await getImages();
     },
 
     search: async (parent, { query }, ctx, info) => {
@@ -80,7 +84,7 @@ const resolvers = {
         return false;
       }
     }
-  },
+  }
 };
 
 const server = new GraphQLServer({
