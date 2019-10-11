@@ -1,22 +1,6 @@
 import { GraphQLServer } from "graphql-yoga";
 import { db } from "./firebase/config";
 
-const getImages = async () => {
-  const response = await db.collection("images").get();
-  const images = [];
-  response.forEach(doc => {
-    const data = doc.data();
-    images.push({
-      id: doc.id,
-      title: data.title,
-      description: data.description,
-      tags: data.tags,
-      url: data.url
-    });
-  });
-  return images;
-};
-
 // Type definitions (Schema)
 const typeDefs = `
     type Query {
@@ -91,7 +75,6 @@ const resolvers = {
           .delete();
         return true;
       } catch (error) {
-        console.log("Error deleting image", error);
         return false;
       }
     }
