@@ -38,9 +38,20 @@ const typeDefs = `
 const resolvers = {
   Query: {
     images: async () => {
-      return await getImages();
+      const response = await db.collection("images").get();
+      const images = [];
+      response.forEach(doc => {
+        const data = doc.data();
+        images.push({
+          id: doc.id,
+          title: data.title,
+          description: data.description,
+          tags: data.tags,
+          url: data.url
+        });
+      });
+      return images;
     },
-
     search: async (parent, { query }, ctx, info) => {
       const response = await db.collection("images").get();
       const images = [];
